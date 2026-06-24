@@ -1,0 +1,24 @@
+# API Framework
+fastapi
+uvicorn[standard]
+
+# LLM
+langchain
+langchain-core
+langchain-groq
+
+# Agent Workflow
+langgraph
+
+# Validation & Settings
+pydantic
+pydantic-settings
+
+# Environment Variables
+python-dotenv
+
+# HTTP Requests
+httpx
+
+# Forms / Request Handling
+python-multipart
