@@ -1,17 +1,18 @@
 from graph import graph
-from models import DebateMessage
+from models import DebateMessage, DebateState
 from textwrap import wrap
 
-result = graph.invoke(
-    {
+init_stage: DebateState = {
         "topic": "Should AI replace software engineers?",
         "research": "",
         "conversation_history": [
             DebateMessage(agent="system", message="debate started")
         ],
-        "verdict": ""
+        "verdict": {},
+        "supporting_evidence": {}
     }
-)
+
+result = graph.invoke(init_stage)
 
 print("\n" + "=" * 100)
 print(f"TOPIC: {result['topic']}")
@@ -43,4 +44,24 @@ print("\n" + "=" * 100)
 print("🏆 VERDICT")
 print("=" * 100)
 
-print(result["verdict"])
+verdict = result["verdict"]
+
+print("Winner:", verdict["winner"])
+print("Reasoning:", verdict["reasoning"])
+print("Pro Score:", verdict["pro_score"])
+print("Against Score:", verdict["against_score"])
+
+print("\n" + "=" * 100)
+print("🏆 Supporting_evidence")
+print("=" * 100)
+evidence = result["supporting_evidence"]
+
+print("Argument:")
+print(evidence["argument"])
+
+print("\nEvidence:")
+for item in evidence["evidence"]:
+    print("-", item)
+
+print("\nConfidence:")
+print(evidence["confidence"])

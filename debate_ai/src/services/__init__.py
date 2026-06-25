@@ -1,5 +1,7 @@
-from .llm import llm
+from .llm import llm, structured_llm_judge, structured_llm_evidence
 
 __all__ = [
-    "llm"
+    "llm",
+    "structured_llm_judge",
+    "structured_llm_evidence"
 ]

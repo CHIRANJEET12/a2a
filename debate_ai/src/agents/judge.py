@@ -1,4 +1,4 @@
-from services import llm
+from services import structured_llm_judge
 
 def judge_agent(state):
 
@@ -43,8 +43,13 @@ def judge_agent(state):
     - Reasoning
     """
 
-    response = llm.invoke(prompt)
+    response = structured_llm_judge.invoke(prompt)
 
     return {
-        "verdict": response.content
+        "verdict": {
+            "winner": response.winner,
+            "reasoning": response.reasoning,
+            "pro_score": response.pro_score,
+            "against_score": response.against_score,
+        }
     }

@@ -1,7 +1,6 @@
 from langgraph.graph import StateGraph, END
 from models import DebateState
-from agents import moderator_agent, research_agent, pro_opening_agent, pro_rebuttal_agent, against_opening_agent, against_rebuttal_agent, judge_agent
-
+from agents import moderator_agent, research_agent, pro_opening_agent, pro_rebuttal_agent, against_opening_agent, against_rebuttal_agent, judge_agent, final_staging_agent
 
 # CREATION OF STATEGRAPH
 builder = StateGraph(DebateState)
@@ -42,6 +41,11 @@ builder.add_node(
     judge_agent
 )
 
+builder.add_node(
+    "supporting_evidence",
+    final_staging_agent
+)
+
 
 # ENTRY POINT
 builder.set_entry_point("moderator")
@@ -79,6 +83,11 @@ builder.add_edge(
 
 builder.add_edge(
     "judge",
+    "supporting_evidence"
+)
+
+builder.add_edge(
+    "supporting_evidence",
     END
 )
 

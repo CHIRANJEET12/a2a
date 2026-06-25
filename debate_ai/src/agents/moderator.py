@@ -1,4 +1,5 @@
 from services import llm
+from models import DebateMessage
 
 def moderator_agent(state):
     topic = state["topic"]
@@ -17,6 +18,10 @@ def moderator_agent(state):
 
     response = llm.invoke(prompt)
 
+    history = state['conversation_history'].copy()
+
+    history.append(DebateMessage(agent="moderator", message=response.content))
+
     return {
-        "debate_scope": response.content
+        "conversation_history": history
     }

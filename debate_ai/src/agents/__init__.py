@@ -5,6 +5,7 @@ from .debate.pro_rebuttal_agent import pro_rebuttal_agent
 from .judge import judge_agent
 from .research import research_agent
 from .moderator import moderator_agent
+from .evidence import final_staging_agent
 
 
 __all__= [
@@ -14,5 +15,6 @@ __all__= [
     "pro_rebuttal_agent",
     "judge_agent",
     "research_agent",
-    "moderator_agent"
+    "moderator_agent",
+    "final_staging_agent"
 ]

@@ -22,3 +22,6 @@ httpx
 
 # Forms / Request Handling
 python-multipart
+
+# Web Search
+tavily-python

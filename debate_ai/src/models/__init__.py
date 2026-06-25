@@ -1,6 +1,8 @@
-from .state import DebateState, DebateMessage
+from .state import DebateState, DebateMessage, DebateResponse, JudgeResponse
 
 __all__ = [
     "DebateState",
-    "DebateMessage"
+    "DebateMessage",
+    "DebateResponse",
+    "JudgeResponse"
 ]
