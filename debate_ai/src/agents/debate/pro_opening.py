@@ -1,7 +1,8 @@
-from services import llm
-from models import DebateMessage
+from ...models import DebateMessage
 
-def pro_opening_agent(state):
+def pro_opening_agent(state,config):
+
+    llm = config["configurable"]["llm"]
 
     prompt = f"""
     You are a professional debater.

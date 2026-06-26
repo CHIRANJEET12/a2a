@@ -1,6 +1,11 @@
-from services import structured_llm_evidence
+from ..models import DebateResponse
 
-def final_staging_agent(state):
+def final_staging_agent(state, config):
+
+    llm = config["configurable"]["llm"]
+    
+    structured_llm = llm.with_structured_output(DebateResponse)
+
 
     history = "\n\n".join(
         [
@@ -35,7 +40,7 @@ Return:
 The confidence score should represent how well-supported the argument is by the evidence provided.
 """
 
-    response = structured_llm_evidence.invoke(prompt)
+    response = structured_llm.invoke(prompt)
 
     return {
         "supporting_evidence": {

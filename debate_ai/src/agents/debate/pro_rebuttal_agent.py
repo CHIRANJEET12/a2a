@@ -1,7 +1,8 @@
-from services import llm
-from models import DebateMessage
+from ...models import DebateMessage
 
-def pro_rebuttal_agent(state):
+def pro_rebuttal_agent(state,config):
+
+    llm = config["configurable"]["llm"]
 
     last_msg = DebateMessage.model_validate(
         state["conversation_history"][-1]

@@ -1,4 +1,4 @@
-from config import settings
+from ..config import settings
 from tavily import TavilyClient
 from pydantic import BaseModel
 from langchain.tools import tool

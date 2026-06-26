@@ -1,7 +1,8 @@
-from services import llm
-from models import DebateMessage
+from ...models import DebateMessage
 
-def against_opening_agent(state):
+def against_opening_agent(state,config):
+
+    llm = config["configurable"]["llm"]
     
     last_msg = DebateMessage.model_validate(
         state["conversation_history"][-1]

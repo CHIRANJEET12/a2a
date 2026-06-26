@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, END
-from models import DebateState
-from agents import moderator_agent, research_agent, pro_opening_agent, pro_rebuttal_agent, against_opening_agent, against_rebuttal_agent, judge_agent, final_staging_agent
+from ..models import DebateState
+from ..agents import moderator_agent, research_agent, pro_opening_agent, pro_rebuttal_agent, against_opening_agent, against_rebuttal_agent, judge_agent, final_staging_agent
 
 # CREATION OF STATEGRAPH
 builder = StateGraph(DebateState)

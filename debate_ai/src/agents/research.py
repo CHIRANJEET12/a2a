@@ -1,17 +1,24 @@
-from services import llm 
-from models import DebateMessage
-from tools import web_search
+from ..models import DebateMessage
+from ..tools import web_search
 from langchain.agents import create_agent
 
-research_react_agent = create_agent(
-    model=llm,
-    tools=[
-        web_search,
-        # wikipedia_search,
-    ]
-)
 
-def research_agent(state):
+def get_research_agent(llm):
+    research_react_agent = create_agent(
+        model=llm,
+        tools=[
+            web_search,
+            # wikipedia_search,
+        ]
+    )
+
+    return research_react_agent
+
+def research_agent(state, config):
+
+    llm = config["configurable"]["llm"]
+
+    research_react_agent = get_research_agent(llm)
 
     topic = state["topic"]
 

@@ -1,6 +1,9 @@
-from services import structured_llm_judge
+from ..models import JudgeResponse
 
-def judge_agent(state):
+def judge_agent(state, config):
+    llm = config["configurable"]["llm"]
+
+    structured_llm = llm.with_structured_output(JudgeResponse)
 
     history = "\n\n".join(
         [
@@ -43,7 +46,7 @@ def judge_agent(state):
     - Reasoning
     """
 
-    response = structured_llm_judge.invoke(prompt)
+    response = structured_llm.invoke(prompt)
 
     return {
         "verdict": {

@@ -1,7 +1,8 @@
-from services import llm
-from models import DebateMessage
+from ..models import DebateMessage
 
-def moderator_agent(state):
+def moderator_agent(state,config):
+    llm = config["configurable"]["llm"]
+
     topic = state["topic"]
 
     prompt = f"""
