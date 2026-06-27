@@ -6,6 +6,7 @@ llm = ChatGroq(
     model="llama-3.1-8b-instant",
     api_key=settings.GROQ_API_KEY,
     temperature=0,
+    max_retries=0,
 )
 
 structured_llm_judge = llm.with_structured_output(JudgeResponse)

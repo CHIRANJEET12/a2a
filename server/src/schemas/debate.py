@@ -15,7 +15,7 @@ class DebateRequest(BaseModel):
     )
 
 
-class DebateResponse(BaseModel):
+class DebateResult(BaseModel):
     topic: str
     transcript: list
 

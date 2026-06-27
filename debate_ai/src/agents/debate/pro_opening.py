@@ -1,34 +1,25 @@
 from ...models import DebateMessage
+from ..utils import truncate_research, invoke_with_retry
 
-def pro_opening_agent(state,config):
-
+def pro_opening_agent(state, config):
     llm = config["configurable"]["llm"]
+    research = truncate_research(state["research"])
 
-    prompt = f"""
-    You are a professional debater.
+    prompt = f"""You are a professional debater taking the PRO position.
 
-    Topic:
-    {state["topic"]}
+Topic: {state["topic"]}
 
-    Research:
-    {state["research"]}
+Research (summary): {research}
 
-    Take the PRO position.
+Write a concise opening argument:
+- Main argument (2-3 sentences)
+- Key evidence (2 points)
+- Conclusion (1-2 sentences)
+"""
 
-    Create:
-    - Main argument
-    - Supporting evidence
-    - Conclusion
-
-    Be persuasive.
-    """
-
-    response = llm.invoke(prompt)
+    response = invoke_with_retry(llm, prompt)
 
     history = state['conversation_history'].copy()
-
     history.append(DebateMessage(agent="pro", message=response.content))
 
-    return {
-        "conversation_history": history
-    }
+    return {"conversation_history": history}

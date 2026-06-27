@@ -1,40 +1,32 @@
 from ...models import DebateMessage
+from ..utils import truncate_research, invoke_with_retry
 
-def against_opening_agent(state,config):
-
+def against_opening_agent(state, config):
     llm = config["configurable"]["llm"]
-    
+
     last_msg = DebateMessage.model_validate(
         state["conversation_history"][-1]
     )
     pro_message = last_msg.message
+    research = truncate_research(state["research"])
 
-    prompt = f"""
-    Topic:
-    {state['topic']}
+    prompt = f"""You are a professional debater taking the AGAINST position.
 
-    Research:
-    {state['research']}
+Topic: {state['topic']}
 
-    Opponent Argument:
-    {pro_message}
+Research (summary): {research}
 
-    Take the AGAINST position.
+Opponent's opening: {pro_message[:500]}
 
-    Create:
-    - Main argument
-    - Supporting evidence
-    - Conclusion
+Write a concise opening argument:
+- Main counter-argument (2-3 sentences)
+- Key evidence (2 points)
+- Conclusion (1-2 sentences)
+"""
 
-    Be persuasive.
-    """
-
-    response = llm.invoke(prompt)
+    response = invoke_with_retry(llm, prompt)
 
     history = state['conversation_history'].copy()
-
     history.append(DebateMessage(agent="against", message=response.content))
 
-    return {
-        "conversation_history": history
-    }
+    return {"conversation_history": history}

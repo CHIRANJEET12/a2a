@@ -1,4 +1,5 @@
 from ..config import settings
+from ..models import SearchResult
 from tavily import TavilyClient
 from pydantic import BaseModel
 from langchain.tools import tool
@@ -21,8 +22,22 @@ def web_search(query: str) -> str:
 
     results = client.search(
         query=query,
-        search_depth="advanced",
-        max_results=5,
+        search_depth="basic",
+        max_results=3,
     )
 
-    return str(results)
+    formatted = []
+
+    for item in results["results"]:
+        formatted.append(
+            SearchResult(
+            title=item["title"],
+            url=item["url"],
+            content=item["content"][:250]
+            )
+        )
+
+    return "\n".join(
+    f"{r.title}\n{r.content}\n{r.url}"
+    for r in formatted
+)

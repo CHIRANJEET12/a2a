@@ -2,8 +2,9 @@
 
 from fastapi import APIRouter, Depends, status
 
-from schemas import DebateRequest, DebateResponse
-from services import DebateService
+
+from ..schemas import DebateRequest, DebateResult, APIResponse
+from ..services import DebateService
 
 router = APIRouter(
     prefix="/debate",
@@ -17,7 +18,7 @@ def get_debate_service() -> DebateService:
     """
     return DebateService()
 
-@router.post("", response_model=DebateResponse, status_code=status.HTTP_200_OK, summary="Run an AI debate")
+@router.post("", response_model=APIResponse[DebateResult], status_code=status.HTTP_200_OK, summary="Run an AI debate")
 async def run_debate(request: DebateRequest, service: DebateService = Depends(get_debate_service),):
     """
     Run a complete debate on the supplied topic.
@@ -25,4 +26,15 @@ async def run_debate(request: DebateRequest, service: DebateService = Depends(ge
 
     result = await service.run(topic=request.topic, groq_api_key=request.groq_api_key)
 
-    return result
+    response = DebateResult(
+        topic=result["topic"],
+        transcript=result["conversation_history"],
+        verdict=result["verdict"],
+        supporting_evidence=result["supporting_evidence"],
+    )
+
+    return APIResponse(
+        success=True,
+        message="Debate completed successfully.",
+        data=response,
+    )

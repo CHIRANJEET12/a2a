@@ -1,6 +1,7 @@
-from .debate import DebateRequest, DebateResponse
-
+from .debate import DebateRequest, DebateResult
+from .common import APIResponse
 __all__ = [
-    "DebateResponse",
-    "DebateRequest"
+    "DebateResult",
+    "DebateRequest",
+    "APIResponse"
 ]

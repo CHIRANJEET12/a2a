@@ -3,8 +3,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-class Evidence(BaseModel):
-    links: List[str]
+class EvidenceItem(BaseModel):
+    text: str
+    url: str | None
 
 class JudgeResponse(BaseModel):
     winner: str
@@ -14,7 +15,7 @@ class JudgeResponse(BaseModel):
 
 class DebateResponse(BaseModel):
     argument: str
-    evidence: Evidence
+    evidence: list[EvidenceItem]
     confidence: float
 
 class DebateMessage(BaseModel):
@@ -31,3 +32,9 @@ class DebateState(TypedDict):
     verdict: dict
 
     supporting_evidence: dict
+
+
+class SearchResult(BaseModel):
+    title: str
+    url: str
+    content: str

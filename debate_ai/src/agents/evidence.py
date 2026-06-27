@@ -1,43 +1,28 @@
 from ..models import DebateResponse
+from .utils import truncate_history
 
 def final_staging_agent(state, config):
-
     llm = config["configurable"]["llm"]
-    
     structured_llm = llm.with_structured_output(DebateResponse)
 
-
-    history = "\n\n".join(
-        [
-            f"{msg.agent}: {msg.message}"
-            for msg in state["conversation_history"]
-        ]
-    )
-
+    history = truncate_history(state["conversation_history"], max_chars=2000)
 
     prompt = f"""
 You are an evidence extraction agent.
 
-Topic:
-{state['topic']}
+Topic: {state['topic']}
 
-Debate Transcript:
+Transcript:
 {history}
 
-Your task:
+Extract:
+- Strongest argument
+- 2–3 evidence points
+- Each evidence MUST include:
+  - text: factual claim
+  - url: real source URL if available, otherwise null
 
-- Identify the strongest overall argument from the debate.
-- Extract the most important pieces of evidence.
-- Remove duplicate evidence.
-- Ignore rhetorical statements.
-- Focus on verifiable facts.
-
-Return:
-- argument
-- evidence
-- confidence
-
-The confidence score should represent how well-supported the argument is by the evidence provided.
+Return structured output only.
 """
 
     response = structured_llm.invoke(prompt)
@@ -45,7 +30,7 @@ The confidence score should represent how well-supported the argument is by the 
     return {
         "supporting_evidence": {
             "argument": response.argument,
-            "evidence": response.evidence,
+            "evidence": [item.model_dump() for item in response.evidence],
             "confidence": response.confidence,
         }
     }

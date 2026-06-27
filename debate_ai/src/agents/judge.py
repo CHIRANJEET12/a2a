@@ -1,50 +1,27 @@
 from ..models import JudgeResponse
+from .utils import truncate_history
 
 def judge_agent(state, config):
     llm = config["configurable"]["llm"]
-
     structured_llm = llm.with_structured_output(JudgeResponse)
 
-    history = "\n\n".join(
-        [
-            f"{msg.agent}: {msg.message}"
-            for msg in state["conversation_history"]
-        ]
-    )
+    history = truncate_history(state["conversation_history"], max_chars=2000)
 
+    prompt = f"""You are an impartial debate judge.
 
-    prompt = f"""
+Topic: {state['topic']}
 
-    You are an impartial debate judge.
+Transcript:
+{history}
 
-    Evaluate both sides based on:
+Score each side (0-10) on:
+- Evidence quality (40%)
+- Logic (30%)
+- Rebuttal (20%)
+- Clarity (10%)
 
-    1. Strength of evidence (40%)
-    2. Logical reasoning (30%)
-    3. Rebuttal quality (20%)
-    4. Clarity and persuasion (10%)
-
-
-    Topic:
-    {state['topic']}
-
-    Debate Transcript:
-    {history}
-
-    Evaluate:
-
-    1. Evidence Quality
-    2. Logical Consistency
-    3. Persuasiveness
-    4. Rebuttal Strength
-
-    Give:
-
-    - Pro Score (/10)
-    - Against Score (/10)
-    - Winner
-    - Reasoning
-    """
+Return: pro_score, against_score, winner, reasoning (2-3 sentences).
+"""
 
     response = structured_llm.invoke(prompt)
 
