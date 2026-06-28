@@ -1,29 +1,27 @@
 from ..config import settings
 from ..models import SearchResult
 from tavily import TavilyClient
-from pydantic import BaseModel
 from langchain.tools import tool
-from typing import List
-import os
 
 
 client = TavilyClient(api_key=settings.TRAVILY_API_KEY)
 
-class SearchResult(BaseModel):
-    title: str
-    url: str
-    content: str
 
 @tool
-def web_search(query: str) -> str:
+def web_search(query: str) -> list[dict]:
     """
-    Search the web using Tavily.
+    When citing evidence:
+
+- Quote the supporting statement.
+- Copy the corresponding URL EXACTLY as provided.
+- Never invent URLs.
+- If no source exists, return null.
     """
 
     results = client.search(
         query=query,
         search_depth="basic",
-        max_results=3,
+        max_results=2,
     )
 
     formatted = []
@@ -33,11 +31,9 @@ def web_search(query: str) -> str:
             SearchResult(
             title=item["title"],
             url=item["url"],
-            content=item["content"][:250]
+            content=item["content"][:150]
             )
         )
 
-    return "\n".join(
-    f"{r.title}\n{r.content}\n{r.url}"
-    for r in formatted
-)
+    return [r.model_dump(mode="json") for r in formatted]
+

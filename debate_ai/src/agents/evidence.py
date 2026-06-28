@@ -7,10 +7,21 @@ def final_staging_agent(state, config):
 
     history = truncate_history(state["conversation_history"], max_chars=2000)
 
+    pro_evidence = state.get("supporting_evidence", {}).get("pro", [])
+    against_evidence = state.get("supporting_evidence", {}).get("against", [])
+
     prompt = f"""
 You are an evidence extraction agent.
 
 Topic: {state['topic']}
+
+Research Sources: {state["research_sources"]}
+
+Pro evidence:
+{pro_evidence}
+
+Against evidence:
+{against_evidence}
 
 Transcript:
 {history}
@@ -30,7 +41,7 @@ Return structured output only.
     return {
         "supporting_evidence": {
             "argument": response.argument,
-            "evidence": [item.model_dump() for item in response.evidence],
+            "evidence": [item.model_dump(mode="json") for item in response.evidence],
             "confidence": response.confidence,
         }
     }

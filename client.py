@@ -522,6 +522,7 @@ inject_css(T)
 
 # ─── Constants ────────────────────────────────────────────────────────────────
 API_URL = "http://127.0.0.1:8000/api/v1/debate"
+API_TIMEOUT_SECONDS = 120
 
 STAGES = [
     ("🔍", "Researching the topic"),
@@ -544,6 +545,7 @@ AGENT_MAP = {
 # ─── Render helpers ───────────────────────────────────────────────────────────
 def bubble(agent, message):
     label, side = AGENT_MAP.get(agent, ("UNKNOWN", "center"))
+    message = html.escape(str(message))
     if side == "pro":
         st.markdown(f"""
         <div class="msg-row pro-row">
@@ -580,7 +582,7 @@ def verdict_block(v):
     winner_text = "PRO wins the debate"    if is_pro else "AGAINST wins the debate"
     ps  = float(v.get("pro_score", 0))
     ags = float(v.get("against_score", 0))
-    reasoning = v.get("reasoning", "")
+    reasoning = html.escape(str(v.get("reasoning", "")))
     st.markdown(f"""
     <div class="verdict-outer">
       <div class="verdict-banner {banner_cls}">
@@ -626,26 +628,15 @@ def evidence_block(e):
         for it in items:
             if isinstance(it, dict):
                 text = html.escape(str(it.get("text", "")))
-                url = it.get("url")
+                url = html.escape(str(it.get("url", "")), quote=True)
 
                 if url:
                     items_html += f"""
-                    <div class="evidence-item">
-                        <div class="ev-dot"></div>
-                        <div class="ev-text">
-                            {text}<br>
-                            <a href="{url}" target="_blank" style="color:#7ad7c0; text-decoration:none;">
-                                source ↗
-                            </a>
-                        </div>
-                    </div>
+                    {url}
                     """
                 else:
                     items_html += f"""
-                    <div class="evidence-item">
-                        <div class="ev-dot"></div>
-                        <div class="ev-text">{text}</div>
-                    </div>
+                    {text}
                     """
             else:
                 # fallback safety
@@ -758,7 +749,7 @@ if run:
                 resp = requests.post(
                     API_URL,
                     json={"topic": topic.strip(), "groq_api_key": api_key.strip()},
-                    timeout=300,
+                    timeout=API_TIMEOUT_SECONDS,
                 )
                 resp.raise_for_status()
                 data = resp.json()
@@ -771,9 +762,16 @@ if run:
             except requests.exceptions.ConnectionError:
                 st.session_state.error = "Cannot connect to http://127.0.0.1:8000 — is your FastAPI server running?"
                 status.update(label="Connection failed", state="error", expanded=False)
+            except requests.exceptions.Timeout:
+                st.session_state.error = (
+                    "The debate is taking too long. This is usually a provider timeout "
+                    "or Groq quota/rate-limit wait. Please try a shorter topic or retry later."
+                )
+                status.update(label="Debate timed out", state="error", expanded=False)
             except requests.exceptions.HTTPError as exc:
                 try:
-                    detail = exc.response.json().get("message", str(exc))
+                    error_body = exc.response.json()
+                    detail = error_body.get("message") or error_body.get("detail") or str(exc)
                 except Exception:
                     detail = str(exc)
                 st.session_state.error = detail
@@ -844,5 +842,3 @@ if st.session_state.result:
             st.session_state.result = None
             st.session_state.error  = None
             st.rerun()
-
-

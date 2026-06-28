@@ -43,11 +43,20 @@ def research_agent(state, config):
     history = state['conversation_history'].copy()
     final_research = response["messages"][-1].content
 
+    msg = response["messages"]
+
+    sources = []
+
+    for r in msg:
+        if r.type == "tool":
+            sources.append(r.content)
+
     history.append(
         DebateMessage(agent="researcher", message=final_research)
     )
 
     return {
         "research": final_research,
+        "research_sources": sources,
         "conversation_history": history,
     }

@@ -6,7 +6,8 @@ class Settings(BaseSettings):
     TRAVILY_API_KEY: str
 
     model_config = SettingsConfigDict(
-        env_file=Path(__file__).resolve().parents[2] / ".env"
+        env_file=Path(__file__).resolve().parents[2] / ".env",
+        extra="ignore",
     )
 
 settings = Settings()

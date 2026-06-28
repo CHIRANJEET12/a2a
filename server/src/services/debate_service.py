@@ -1,5 +1,10 @@
+import asyncio
+
 from debate_ai import graph, DebateMessage
 from .llm_factory import LLMFactory
+
+DEBATE_TIMEOUT_SECONDS = 110
+
 
 class DebateService:
 
@@ -26,6 +31,7 @@ class DebateService:
                     message="Debate started."
                 )
             ],
+            "research_sources": [], 
             "verdict": {},
             "supporting_evidence": {},
         }
@@ -35,9 +41,13 @@ class DebateService:
             }
         }
 
-        result = graph.invoke(
-            init_stage,
-            config=config
+        result = await asyncio.wait_for(
+            asyncio.to_thread(
+                graph.invoke,
+                init_stage,
+                config=config,
+            ),
+            timeout=DEBATE_TIMEOUT_SECONDS,
         )
 
         return result

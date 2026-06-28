@@ -1,6 +1,8 @@
 #//v1/debate.py
 
-from fastapi import APIRouter, Depends, status
+import asyncio
+
+from fastapi import APIRouter, Depends, HTTPException, status
 
 
 from ..schemas import DebateRequest, DebateResult, APIResponse
@@ -24,7 +26,28 @@ async def run_debate(request: DebateRequest, service: DebateService = Depends(ge
     Run a complete debate on the supplied topic.
     """
 
-    result = await service.run(topic=request.topic, groq_api_key=request.groq_api_key)
+    try:
+        result = await service.run(topic=request.topic, groq_api_key=request.groq_api_key)
+    except asyncio.TimeoutError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            detail=(
+                "The debate took too long. This is usually caused by provider latency, "
+                "Tavily search delay, or Groq quota/rate-limit waiting. Please try again later "
+                "or use a shorter topic."
+            ),
+        ) from exc
+    except Exception as exc:
+        error_text = str(exc)
+        if "429" in error_text or "rate_limit_exceeded" in error_text or "rate limit" in error_text.lower():
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=(
+                    "Groq rate limit or daily token quota was reached. Please retry after the "
+                    "wait time shown by Groq, use a different key/org, or upgrade your Groq tier."
+                ),
+            ) from exc
+        raise
 
     response = DebateResult(
         topic=result["topic"],

@@ -1,6 +1,7 @@
 # API Framework
 fastapi
 uvicorn[standard]
+streamlit
 
 # LLM
 langchain
@@ -25,3 +26,6 @@ python-multipart
 
 # Web Search
 tavily-python
+
+# Tests
+pytest
