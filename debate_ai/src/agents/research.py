@@ -3,6 +3,7 @@ import logging
 from ..models import DebateMessage
 from ..tools import web_search
 from langchain.agents import create_agent
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -17,28 +18,35 @@ def get_research_agent(llm):
 
 def research_agent(state, config):
     llm = config["configurable"]["llm"]
+
     research_react_agent = get_research_agent(llm)
     topic = state["topic"]
 
-    # Small delay before the research call to avoid bursting the TPM limit
-    time.sleep(3)
 
-    response = research_react_agent.invoke(
-        {
-            "messages": [
-                (
-                    "system",
-                    "You are a research assistant. Use only the web_search tool. "
-                    "Be concise — limit your final summary to 300 words."
-                ),
-                (
-                    "user",
-                    f"Research this debate topic briefly:\n\n{topic}\n\n"
-                    "Collect one supporting point, one opposing point, and one neutral fact."
-                ),
-            ]
-        }
-    )
+    for attempt in range(3):
+        try:
+            response = research_react_agent.invoke(
+                {
+                    "messages": [
+                        (
+                            "system",
+                            "You are a research assistant. Use only the web_search tool. "
+                            "Be concise — limit your final summary to 300 words."
+                        ),
+                        (
+                            "user",
+                            f"Research this debate topic briefly:\n\n{topic}\n\n"
+                            "Collect one supporting point, one opposing point, and one neutral fact."
+                        ),
+                    ]
+                }
+            )
+            break
+        except Exception as e:
+            if "tool_use_failed" in str(e) and attempt < 2:
+                time.sleep(2)
+                continue
+            raise
 
     history = state['conversation_history'].copy()
     final_research = response["messages"][-1].content
