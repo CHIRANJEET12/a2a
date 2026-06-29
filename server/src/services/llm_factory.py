@@ -1,25 +1,22 @@
 import os
 from pathlib import Path
-
+from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 
 
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 
-DEFAULT_GROQ_MODEL = "openai/gpt-oss-120b"
 
 
 class LLMFactory:
 
     @staticmethod
-    def create_groq(api_key: str, model: str | None = None):
-        model_name = model or os.getenv("GROQ_MODEL", DEFAULT_GROQ_MODEL)
+    def create_gemini(api_key: str, model: str | None = None):
 
-        return ChatGroq(
-            model=model_name,
-            api_key=api_key,
+        return ChatGoogleGenerativeAI(
+            model="gemini-2.5-flash",
+            google_api_key=api_key,
             temperature=0,
             max_tokens=1024,
-            max_retries=2,
         )

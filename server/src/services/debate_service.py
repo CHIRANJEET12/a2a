@@ -16,7 +16,7 @@ class DebateService:
         Execute a debate.
         """
 
-        llm = LLMFactory.create_groq(
+        llm = LLMFactory.create_gemini(
             api_key=groq_api_key
         )
 
