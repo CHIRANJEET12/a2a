@@ -622,42 +622,47 @@ def evidence_block(e):
         conf_cls, conf_txt = "conf-low", f"! {pct}% confidence"
 
     items_html = ""
-
     if isinstance(items, list):
         for it in items:
-            if isinstance(it, dict):
-                text = html.escape(str(it.get("text", "")))
-                url = html.escape(str(it.get("url", "")), quote=True)
+        if isinstance(it, dict):
+            text = html.escape(str(it.get("text", "")))
+            url = html.escape(str(it.get("url", "")), quote=True)
 
-                items_html += f"""
-                <div class="evidence-item">
-                    <div class="ev-dot"></div>
-                    <div class="ev-text">
-                        <div>{text}</div>
-                        {
-                            f'<a href="{url}" target="_blank" '
-                            f'style="color:#3b82f6;text-decoration:none;word-break:break-all;">'
-                            f'🔗 {url}</a>'
-                            if url else ""
-                        }
-                    </div>
-                </div>
+            link_html = ""
+            if url:
+                link_html = f"""
+                <a href="{url}" target="_blank"
+                   style="color:#3b82f6;text-decoration:none;word-break:break-all;">
+                    🔗 {url}
+                </a>
                 """
-            else:
-                text = html.escape(str(it))
-                items_html += f"""
-                <div class="evidence-item">
-                    <div class="ev-dot"></div>
-                    <div class="ev-text">{text}</div>
+
+            items_html += f"""
+            <div class="evidence-item">
+                <div class="ev-dot"></div>
+                <div class="ev-text">
+                    <div>{text}</div>
+                    {link_html}
                 </div>
-                """
+            </div>
+            """
+
+        else:
+            text = html.escape(str(it))
+            items_html += f"""
+            <div class="evidence-item">
+                <div class="ev-dot"></div>
+                <div class="ev-text">{text}</div>
+            </div>
+            """
+            
     else:
         items_html = f"""
-        <div class="evidence-item">
-            <div class="ev-dot"></div>
-            <div class="ev-text">{html.escape(str(items))}</div>
-        </div>
-        """
+    <div class="evidence-item">
+        <div class="ev-dot"></div>
+        <div class="ev-text">{html.escape(str(items))}</div>
+    </div>
+    """
 
     st.markdown(f"""
     <div class="evidence-card">
