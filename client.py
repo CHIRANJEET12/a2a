@@ -623,23 +623,27 @@ def evidence_block(e):
 
     items_html = ""
 
-    # evidence is now: List[{"text": ..., "url": ...}]
     if isinstance(items, list):
         for it in items:
             if isinstance(it, dict):
                 text = html.escape(str(it.get("text", "")))
                 url = html.escape(str(it.get("url", "")), quote=True)
 
-                if url:
-                    items_html += f"""
-                    {url}
-                    """
-                else:
-                    items_html += f"""
-                    {text}
-                    """
+                items_html += f"""
+                <div class="evidence-item">
+                    <div class="ev-dot"></div>
+                    <div class="ev-text">
+                        <div>{text}</div>
+                        {
+                            f'<a href="{url}" target="_blank" '
+                            f'style="color:#3b82f6;text-decoration:none;word-break:break-all;">'
+                            f'🔗 {url}</a>'
+                            if url else ""
+                        }
+                    </div>
+                </div>
+                """
             else:
-                # fallback safety
                 text = html.escape(str(it))
                 items_html += f"""
                 <div class="evidence-item">
@@ -648,7 +652,6 @@ def evidence_block(e):
                 </div>
                 """
     else:
-        # fallback if backend breaks again
         items_html = f"""
         <div class="evidence-item">
             <div class="ev-dot"></div>
