@@ -10,8 +10,8 @@ class EvidenceItem(BaseModel):
 class JudgeResponse(BaseModel):
     winner: str
     reasoning: str
-    pro_score: float
-    against_score: float
+    pro_score: float = 5.0
+    against_score: float = 5.0
 
 
 class DebateResponse(BaseModel):
