@@ -666,10 +666,7 @@ def evidence_block(e):
             <span class="conf-pill {conf_cls}">{conf_txt}</span>
         </div>
 
-        <div class="evidence-body">
-            <div class="eyebrow" style="margin-bottom:0.6rem;">Supporting evidence</div>
             {items_html}
-        </div>
     </div>
     """, unsafe_allow_html=True)
 
