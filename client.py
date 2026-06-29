@@ -521,7 +521,7 @@ section[data-testid="stSidebar"] {{ display: none !important; }}
 inject_css(T)
 
 # ─── Constants ────────────────────────────────────────────────────────────────
-API_URL = "http://127.0.0.1:8000/api/v1/debate"
+API_URL = "https://a2a-eqlk.onrender.com/api/v1/debate"
 API_TIMEOUT_SECONDS = 120
 
 STAGES = [
@@ -760,7 +760,7 @@ if run:
                     st.session_state.error = data.get("message", "Server returned an error.")
                     status.update(label="Debate failed", state="error", expanded=False)
             except requests.exceptions.ConnectionError:
-                st.session_state.error = "Cannot connect to http://127.0.0.1:8000 — is your FastAPI server running?"
+                st.session_state.error = "Cannot connect to https://a2a-eqlk.onrender.com — is your backend deployed and reachable?"
                 status.update(label="Connection failed", state="error", expanded=False)
             except requests.exceptions.Timeout:
                 st.session_state.error = (

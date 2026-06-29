@@ -35,4 +35,4 @@ Run the Streamlit client in a second terminal:
 uv run streamlit run client.py
 ```
 
-The client posts to `http://127.0.0.1:8000/api/v1/debate`.
+The client posts to `https://a2a-eqlk.onrender.com/api/v1/debate`.
