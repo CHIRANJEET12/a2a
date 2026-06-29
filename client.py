@@ -663,7 +663,8 @@ def evidence_block(e):
         <div class="ev-text">{html.escape(str(items))}</div>
     </div>
     """
-
+        
+    print(items_html)
     st.markdown(f"""
     <div class="evidence-card">
         <div class="evidence-top">
