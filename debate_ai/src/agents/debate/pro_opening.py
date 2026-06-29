@@ -17,7 +17,7 @@ Research Sources: {state["research_sources"]}
 
 Every factual claim must cite one of the supplied URLs.
 
-Instead write:
+Instead attach the link of the urls like this:
 
 According to Oracle:
 url

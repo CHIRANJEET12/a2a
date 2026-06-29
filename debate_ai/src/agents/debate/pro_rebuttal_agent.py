@@ -19,16 +19,9 @@ Opponent's argument: {opponent_message}
 Research Sources: {state["research_sources"]}
 Every factual claim must cite one of the supplied URLs.
 
-Never say "studies show..."
-
-Instead write:
+Instead attach the link of the urls like this:
 
 According to Oracle:
-https://...
-
-or
-
-According to Databricks:
 https://...
 
 As the PRO side, write a focused rebuttal (3-5 sentences):

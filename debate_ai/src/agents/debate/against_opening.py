@@ -25,17 +25,12 @@ Opponent's opening: {pro_message[:500]}
 
 Every factual claim must cite one of the supplied URLs.
 
-Never say "studies show..."
 
-Instead write:
+Instead attach the link of the urls like this:
 
 According to Oracle:
 https://...
 
-or
-
-According to Databricks:
-https://...
 
 Write a concise opening argument:
 - Main counter-argument (2-3 sentences)

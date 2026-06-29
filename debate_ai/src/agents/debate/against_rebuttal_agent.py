@@ -18,17 +18,13 @@ Research Sources: {state["research_sources"]}
 
 Every factual claim must cite one of the supplied URLs.
 
-Never say "studies show..."
 
-Instead write:
+Instead attach the link of the urls like this:
 
 According to Oracle:
 https://...
 
-or
 
-According to Databricks:
-https://...
 
 As the AGAINST side, write a focused counter-rebuttal (3-5 sentences):
 - Challenge the weakest point
