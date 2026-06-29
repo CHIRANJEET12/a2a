@@ -7,7 +7,7 @@ from langchain_groq import ChatGroq
 
 load_dotenv(Path(__file__).resolve().parents[3] / ".env")
 
-DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b"
+DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile"
 
 
 class LLMFactory:
